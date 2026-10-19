@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SplitUp - Expense Splitter</title>
+  <meta name="description" content="Add shared expenses, see who owes whom, and settle up without the awkward maths.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23d9480f'/%3E%3Cpath d='M30 38h40M30 62h40M62 26l12 12-12 12M38 50L26 62l12 12' fill='none' stroke='white' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="#/"><span class="brand-mark">÷</span> SplitUp</a>
+    <button class="btn ghost" id="copy-link" hidden>🔗 Copy invite link</button>
+  </header>
+
+  <!-- ===== Home: create a group ===== -->
+  <main id="home-view" class="container narrow" hidden>
+    <section class="hero">
+      <h1>Share costs, <span class="grad">not headaches.</span></h1>
+      <p class="muted">Create a group, add what everyone spent, and SplitUp works out exactly who owes whom.</p>
+    </section>
+
+    <form id="create-form" class="panel" novalidate>
+      <h2>Start a new group</h2>
+      <div class="row">
+        <label class="field grow"><span>Group name</span>
+          <input name="name" maxlength="60" placeholder="Weekend trip, Flat 4B, Birthday dinner..." required>
+        </label>
+        <label class="field"><span>Currency</span>
+          <select name="currency" id="currency-select"></select>
+        </label>
+      </div>
+      <div class="field">
+        <span>Who is in? <em class="muted">(press Enter after each name)</em></span>
+        <div class="tag-input" id="tag-input">
+          <div id="tags" class="tags"></div>
+          <input id="member-input" maxlength="30" placeholder="Add a name..." autocomplete="off">
+        </div>
+      </div>
+      <p class="form-error" id="create-error" hidden></p>
+      <button class="btn primary block" type="submit">Create group</button>
+    </form>
+
+    <section id="recent" class="panel" hidden>
+      <h2>Your recent groups</h2>
+      <ul id="recent-list" class="recent-list"></ul>
+    </section>
+  </main>
+
+  <!-- ===== Group page ===== -->
+  <main id="group-view" class="container" hidden>
+    <section class="group-head">
+      <div>
+        <h1 id="group-name"></h1>
+        <p class="muted" id="group-sub"></p>
+      </div>
+      <div class="total"><span class="muted">Total spent</span><b id="total-spent"></b></div>
+    </section>
+
+    <div class="layout">
+      <div class="col">
+        <section class="panel">
+          <h2>Add an expense</h2>
+          <form id="expense-form" novalidate>
+            <label class="field"><span>What was it for?</span>
+              <input name="description" maxlength="80" placeholder="Groceries, taxi, tickets..." required>
+            </label>
+            <div class="row">
+              <label class="field"><span>Amount</span>
+                <input name="amount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required>
+              </label>
+              <label class="field"><span>Paid by</span>
+                <select name="paid_by" id="paid-by"></select>
+              </label>
+              <label class="field"><span>Date</span>
+                <input name="date" type="date" required>
+              </label>
+            </div>
+            <div class="field">
+              <span>Split between
+                <button type="button" class="link" id="toggle-all">select none</button>
+              </span>
+              <div class="checks" id="participants"></div>
+            </div>
+            <p class="preview" id="preview"></p>
+            <p class="form-error" id="expense-error" hidden></p>
+            <button class="btn primary block" type="submit">Add expense</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h2>History</h2>
+          <ul id="history" class="history"></ul>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="panel">
+          <h2>Who owes whom</h2>
+          <ul id="payments" class="payments"></ul>
+        </section>
+
+        <section class="panel">
+          <h2>Balances</h2>
+          <ul id="balances" class="balances"></ul>
+        </section>
+
+        <section class="panel">
+          <h2>People</h2>
+          <div id="people" class="tags plain"></div>
+          <form id="add-member-form" class="inline-form">
+            <input name="name" maxlength="30" placeholder="Add someone else" autocomplete="off" aria-label="New member name">
+            <button class="btn ghost" type="submit">Add</button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
